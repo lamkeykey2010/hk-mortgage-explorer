@@ -1,4 +1,4 @@
-import {plannerResult,prepareExplore,parameters,dreamResult} from './explore-ui.mjs';
+import {plannerResult,prepareExplore,parameters,dreamResult,syncDreamFilters} from './explore-ui.mjs';
 import {transferExplore} from './explore-math.mjs';
 import {purchase,payment,refinance} from './math.mjs';
 const zh=document.documentElement.lang==='zh-Hant';
@@ -9,8 +9,9 @@ const money=x=>new Intl.NumberFormat(zh?'zh-HK':'en-HK',{maximumFractionDigits:0
 const hkd=x=>'HK$ '+money(x);
 const metric=(label,value)=>`<div class="metric"><dt>${label}</dt><dd>${value}</dd></div>`;
 let active='budget';
+let listingPageNumber=1;
 const snapshots={};
-function values(form){return Object.fromEntries([...new FormData(form)].map(([k,v])=>[k,['region','district','estate','bedrooms','planId'].includes(k)?v:Number(v)]));}
+function values(form){return Object.fromEntries([...new FormData(form)].map(([k,v])=>[k,['region','district','estate','bedrooms','planId','sort'].includes(k)?v:Number(v)]));}
 function render(mode){
  const invalid=mode==='budget'?(zh?'請輸入有效現金及每月收入，並檢查可調整假設。':'Enter valid cash and monthly income, and check any adjusted assumptions.'):t.invalid;
  const form=document.querySelector(`#${mode}-form`), output=document.querySelector(`#${mode}-result`);
@@ -24,7 +25,7 @@ function render(mode){
  try{
  if(mode==='budget'){
   output.innerHTML=plannerResult(v,zh);
-  document.querySelector('#dream-result').innerHTML=dreamResult(v,zh,values(document.querySelector('#dream-form')));
+  document.querySelector('#dream-result').innerHTML=dreamResult(v,zh,{...syncDreamFilters(document.querySelector('#dream-form'),zh),page:listingPageNumber});
  }else if(mode==='buy'){
   const p=purchase(v), b=payment(p.principal,v.rateB,v.months);
   output.innerHTML=`<div class="eyebrow">${t.monthly}</div><div class="big-number">${hkd(p.monthly)}</div><p class="number-note">${t.perMonth}</p><dl class="metrics">${metric(t.loan,hkd(p.principal))}${metric(t.cash,hkd(p.cash))}${metric(t.income,hkd(p.requiredIncome))}${metric(t.dsr,p.dsr.toFixed(1)+'%')}${metric(t.total,hkd(p.interestTotal))}${metric(t.up,hkd(p.rateUp))}</dl><div class="bar" role="img" aria-label="${t.dsr}: ${p.dsr.toFixed(1)}%"><span style="width:${Math.min(100,p.dsr/50*100)}%;background:${p.dsr>50?'#b75a35':'#1a5143'}"></span></div><p class="result-note ${p.dsr>50?'warning':''}">${p.dsr>50?t.dsrHigh:t.dsrOk}</p><p class="result-note"><strong>${t.compare}: ${hkd(b)}</strong><br>${t.diff}: ${hkd(Math.abs(p.monthly-b))}</p>${v.ltv>70?`<p class="result-note warning">${t.mip}</p>`:''}<p class="result-note">${t.costs}</p>`;
@@ -41,7 +42,7 @@ function render(mode){
 }
 for(const mode of ['budget','buy','refi']){
  const form=document.querySelector(`#${mode}-form`);
- form.addEventListener('input',e=>{if(mode==='budget'&&['savings','income'].includes(e.target.name)&&form.checkValidity())prepareExplore(form,true);render(mode);});form.addEventListener('submit',e=>e.preventDefault());render(mode);
+ form.addEventListener('input',e=>{if(mode==='budget')listingPageNumber=1;if(mode==='budget'&&['savings','income'].includes(e.target.name)&&form.checkValidity())prepareExplore(form,true);render(mode);});form.addEventListener('submit',e=>e.preventDefault());render(mode);
 }
 document.querySelectorAll('[data-mode]').forEach(button=>button.addEventListener('click',()=>{
  active=button.dataset.mode;
@@ -64,6 +65,8 @@ document.querySelector('#budget-result').addEventListener('click',e=>{
  render('buy');document.querySelector('[data-mode="buy"]').click();
 });
 
-document.querySelector('#dream-form').addEventListener('input',()=>render('budget'));
+document.querySelector('#dream-form').addEventListener('input',()=>{listingPageNumber=1;render('budget');});
 document.querySelector('#dream-form').addEventListener('submit',e=>e.preventDefault());
 document.querySelector('#budget-result').addEventListener('click',e=>{const term=e.target.closest('[data-term]');if(!term)return;document.querySelector('#budget-form').elements.namedItem('months').value=term.dataset.term;render('budget');});
+
+document.querySelector('#dream-result').addEventListener('click',e=>{const button=e.target.closest('[data-listing-page]');if(!button||button.disabled)return;listingPageNumber=Number(button.dataset.listingPage);render('budget');document.querySelector('#dream-house').scrollIntoView({block:'start'});});

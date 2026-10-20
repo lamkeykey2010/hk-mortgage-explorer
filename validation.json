@@ -1,7 +1,7 @@
 {
-  "checked_at_utc": "2026-10-20T15:34:20.678Z",
+  "checked_at_utc": "2026-10-20T22:49:59.512Z",
   "automated_tests": {
-    "passed": 26,
+    "passed": 32,
     "failed": 0
   },
   "build": "6 bilingual pages, GitHub Pages project-path links",
@@ -11,13 +11,19 @@
       "Only two required preliminary inputs",
       "Automatic buying costs and cash reserve",
       "Green, amber and red price-slider states",
-      "Ten consistent source-linked asking-price examples; one inconsistent record excluded",
       "Region, district, estate and bedroom filters; empty matches shown honestly",
       "Transfer preserves price, borrowing cost and cash reserve",
       "Bank sources and dates shown; five H/P planning choices",
       "English and Traditional Chinese",
       "320px and 390px mobile layout checks passed with no document overflow",
-      "Invalid input clears stale property cards"
+      "Invalid input clears stale property cards",
+      "34 usable records across13 administrative districts, with dated source links",
+      "Selecting Kowloon removes Wan Chai and clears incompatible district/estate selections",
+      "District narrows estates, building selection groups all recorded units and narrows bedrooms",
+      "Price sorting ascending and descending checked on two Aquamarine units",
+      "Default18 matches shown in12-record and6-record pages",
+      "English and Traditional Chinese filter menus checked; no captured console errors",
+      "390px expanded-filter layout has no document overflow"
     ],
     "limits": "No live bank offer feed, no guaranteed availability, no floor-plan inference, no employee/guarantor model"
   },

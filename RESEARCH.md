@@ -16,9 +16,9 @@ The selected H scenarios use the prime-linked cap, yielding3.25% for this resear
 
 ## Property examples
 
-Ten concise, attributed asking-price examples from 28Hse are linked in src/market-data.mjs, with individual source-updated dates and research date. They are manually reviewed factual examples, not a licensed automated listing feed or a guarantee of availability. No images, floor plans, agent descriptions or contact data are copied. Bedroom count and saleable area are source fields, not estimated layouts. Exact floor plans and dimensions are not inferred. One inconsistent Novi advertisement is retained only as an excluded provenance record. Hay Wah is one bedroom despite an advertisement suggesting potential conversion to two.
+Thirty-four usable attributed asking-price records from 28Hse are linked in src/listing-data.mjs, with individual source-updated and checked dates. They are manually reviewed factual examples, not a licensed automated listing feed or a guarantee of availability. No images, floor plans, agent descriptions or contact data are copied. Bedroom count and saleable area are source fields, not estimated layouts. Exact floor plans and dimensions are not inferred. One inconsistent Novi advertisement is retained only as an excluded provenance record. Hay Wah is one bedroom despite an advertisement suggesting potential conversion to two.
 
-The default three cards highlight lower asking price, more published space, and proximity to the selected price within this small sample. They are not market-wide recommendations. Financial color checks run separately for every example. Region, district, estate and bedroom filters narrow only this sample. Empty results remain empty. Asking prices, bank valuations and registered transaction prices are separate concepts.
+All matching records in this sample can be browsed in12-record pages, with price, area and update-date sorting. Filters cascade from region to administrative district to estate to bedrooms. Multiple units share one estate option. This is not market-wide coverage. Financial color checks run separately for every example. Region, district, estate and bedroom filters narrow only this sample. Empty results remain empty. Asking prices, bank valuations and registered transaction prices are separate concepts.
 
 ## Land Registry
 
@@ -27,3 +27,7 @@ Free monthly [price-band statistics](https://data.gov.hk/en-data/dataset/hk-lr-d
 ## Publication
 
 Keith requested GitHub account lamkeykey2010 and GitHub Pages hosting. This is a development preview with indexing disabled. No AdSense scripts or tracking are configured. Future production expansion needs a suitable property-data arrangement, a freshness process for bank terms, real operator/contact details and advertising configuration. No general redistribution licence is granted for third-party material by publishing this source.
+
+## Expansion checked 21 October 2026
+
+Added24 directly checked asking-price examples. There are34 usable records, plus one excluded inconsistent advertisement. Per-record source and checked dates are in src/listing-data.mjs. Region/district/estate/bedroom choices cascade, and all matching records can be browsed with counts, sorting and12-record pages. District values are administrative districts, with locality retained separately. This remains a dated sample, not a live or market-wide feed. No licensed free listing API has been established.

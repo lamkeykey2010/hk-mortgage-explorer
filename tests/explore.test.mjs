@@ -55,3 +55,8 @@ test('transfer keeps the selected price, fees and cash limits consistent with de
  const detail=purchase(q);assert.ok(detail.cash+p.reserve<=p.savings+1);assert.ok(detail.monthly<=p.income*.5+.01);
  assert.equal(transferExplore(purchaseCeiling(p,50)+10000,p),null);
 });
+
+test('selecting a building includes each verified unit in that building',()=>{
+ const matches=matchingListings(listings,12000000,{region:'Kowloon',district:'Sham Shui Po',estate:'4063123'});
+ assert.deepEqual(matches.map(r=>r.id).sort(),['4063085','4063123']);
+});
