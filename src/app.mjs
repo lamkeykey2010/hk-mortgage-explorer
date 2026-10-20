@@ -1,3 +1,5 @@
+import {plannerResult} from './planner-ui.mjs';
+import {purchaseInputs} from './planner-math.mjs';
 import {purchase,payment,refinance} from './math.mjs';
 const zh=document.documentElement.lang==='zh-Hant';
 const t=zh?{
@@ -6,9 +8,9 @@ const t=zh?{
 const money=x=>new Intl.NumberFormat(zh?'zh-HK':'en-HK',{maximumFractionDigits:0}).format(Math.round(x));
 const hkd=x=>'HK$ '+money(x);
 const metric=(label,value)=>`<div class="metric"><dt>${label}</dt><dd>${value}</dd></div>`;
-let active='buy';
+let active='budget';
 const snapshots={};
-function values(form){return Object.fromEntries([...new FormData(form)].map(([k,v])=>[k,Number(v)]));}
+function values(form){return Object.fromEntries([...new FormData(form)].map(([k,v])=>[k,k==='region'?v:Number(v)]));}
 function render(mode){
  const form=document.querySelector(`#${mode}-form`), output=document.querySelector(`#${mode}-result`);
  if(mode==='refi'){
@@ -18,7 +20,9 @@ function render(mode){
  if(!form.checkValidity()){output.innerHTML=`<p class="error" role="status">${t.invalid}</p>`;delete snapshots[mode];return;}
  const v=values(form);
  try{
- if(mode==='buy'){
+ if(mode==='budget'){
+  output.innerHTML=plannerResult(v,zh);
+ }else if(mode==='buy'){
   const p=purchase(v), b=payment(p.principal,v.rateB,v.months);
   output.innerHTML=`<div class="eyebrow">${t.monthly}</div><div class="big-number">${hkd(p.monthly)}</div><p class="number-note">${t.perMonth}</p><dl class="metrics">${metric(t.loan,hkd(p.principal))}${metric(t.cash,hkd(p.cash))}${metric(t.income,hkd(p.requiredIncome))}${metric(t.dsr,p.dsr.toFixed(1)+'%')}${metric(t.total,hkd(p.interestTotal))}${metric(t.up,hkd(p.rateUp))}</dl><div class="bar" role="img" aria-label="${t.dsr}: ${p.dsr.toFixed(1)}%"><span style="width:${Math.min(100,p.dsr/50*100)}%;background:${p.dsr>50?'#b75a35':'#1a5143'}"></span></div><p class="result-note ${p.dsr>50?'warning':''}">${p.dsr>50?t.dsrHigh:t.dsrOk}</p><p class="result-note"><strong>${t.compare}: ${hkd(b)}</strong><br>${t.diff}: ${hkd(Math.abs(p.monthly-b))}</p>${v.ltv>70?`<p class="result-note warning">${t.mip}</p>`:''}<p class="result-note">${t.costs}</p>`;
   const yearly=[];let paid=0,interest=0;
@@ -32,7 +36,7 @@ function render(mode){
  snapshots[mode]=`${t.assumptions}\n\n${t.inputs}\n`+[...form.elements].filter(el=>el.name).map(el=>`${el.labels?.[0]?.textContent}: ${el.value}`).join('\n')+`\n\n${t.results}\n`+output.innerText;
  }catch{output.innerHTML=`<p class="error" role="status">${t.invalid}</p>`;delete snapshots[mode];}
 }
-for(const mode of ['buy','refi']){
+for(const mode of ['budget','buy','refi']){
  const form=document.querySelector(`#${mode}-form`);
  form.addEventListener('input',()=>render(mode));form.addEventListener('submit',e=>e.preventDefault());render(mode);
 }
@@ -46,4 +50,13 @@ document.querySelector('#download').addEventListener('click',()=>{
  if(!snapshots[active]){document.querySelector(`#${active}-form`).reportValidity();return;}
  const blob=new Blob([snapshots[active]],{type:'text/plain;charset=utf-8'}),url=URL.createObjectURL(blob);
  const a=document.createElement('a');a.href=url;a.download=`mortgage-${active}-estimate.txt`;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
+});
+
+document.querySelector('#budget-result').addEventListener('click',e=>{
+ if(!e.target.closest('[data-use-budget]'))return;
+ const v=values(document.querySelector('#budget-form')),transferred=purchaseInputs(v);
+ if(!transferred)return;
+ const form=document.querySelector('#buy-form');
+ for(const [key,value] of Object.entries(transferred))form.elements.namedItem(key).value=value;
+ render('buy');document.querySelector('[data-mode="buy"]').click();
 });

@@ -1,23 +1,47 @@
 {
-  "checked_at_utc": "2026-10-20T14:50:37.4025935Z",
+  "checked_at_utc": "2026-10-20T15:04:35.813Z",
   "automated_tests": {
-    "passed": 12,
+    "passed": 18,
     "failed": 0,
     "command": "node --test tests/*.test.mjs"
   },
   "build": "Passed: 6 pages",
   "local_http": {
     "pages_passed": 6,
-    "assets_passed": 2
+    "assets_passed": 5
   },
   "javascript_syntax": "node --check src/app.mjs passed",
-  "browser_and_mobile_qa": "Not performed. In-app browser unavailable and browser inventory empty.",
-  "deployment": "Not deployed. Failed to connect to git.chatgpt-team.site:443. No broader access requested.",
-  "adsense": "Planning only. No publisher ID configured, no ad code loaded, no account approval verified.",
+  "browser_and_mobile_qa": {
+    "status": "Passed scoped interaction and visual checks in the Codex in-app browser",
+    "languages": [
+      "English",
+      "Traditional Chinese"
+    ],
+    "viewport_widths": [
+      320,
+      390,
+      "default desktop"
+    ],
+    "checks": [
+      "Budget calculation, region selection and cash shortfall",
+      "Budget transfer preserves cash and payment limits",
+      "Purchase calculation with lower valuation",
+      "Refinance invalid horizon and recovery",
+      "Summary download content",
+      "Guide language navigation",
+      "No document horizontal overflow at 320px or 390px",
+      "No captured console warnings or errors"
+    ],
+    "limits": "Not an exhaustive accessibility audit or a multi-browser/device certification"
+  },
+  "deployment": "Validated source prepared for private deployment. See parent PROJECT.json for final deployment state.",
+  "adsense": "No publisher ID, ad script or account approval configured.",
   "financial_limits": [
-    "Rates illustrative, not live quotes",
+    "Rates illustrative, not live bank quotes",
     "Duty and MIP premiums require manual cost inputs",
-    "Rates constant within each scenario",
-    "Refinance term unchanged, costs and retained cashback at outset"
+    "Budget planner uses ordinary LTV up to 70%, not MIP",
+    "Rates constant in each scenario",
+    "Refinance term unchanged, costs and retained cashback at outset",
+    "Housing is an August 2026 provisional RVD three-region average snapshot, not district/estate/listing coverage"
   ]
 }
