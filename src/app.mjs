@@ -1,5 +1,5 @@
-import {plannerResult} from './planner-ui.mjs';
-import {purchaseInputs} from './planner-math.mjs';
+import {plannerResult,prepareExplore,parameters,dreamResult} from './explore-ui.mjs';
+import {transferExplore} from './explore-math.mjs';
 import {purchase,payment,refinance} from './math.mjs';
 const zh=document.documentElement.lang==='zh-Hant';
 const t=zh?{
@@ -10,18 +10,21 @@ const hkd=x=>'HK$ '+money(x);
 const metric=(label,value)=>`<div class="metric"><dt>${label}</dt><dd>${value}</dd></div>`;
 let active='budget';
 const snapshots={};
-function values(form){return Object.fromEntries([...new FormData(form)].map(([k,v])=>[k,k==='region'?v:Number(v)]));}
+function values(form){return Object.fromEntries([...new FormData(form)].map(([k,v])=>[k,['region','district','estate','bedrooms','planId'].includes(k)?v:Number(v)]));}
 function render(mode){
+ const invalid=mode==='budget'?(zh?'請輸入有效現金及每月收入，並檢查可調整假設。':'Enter valid cash and monthly income, and check any adjusted assumptions.'):t.invalid;
  const form=document.querySelector(`#${mode}-form`), output=document.querySelector(`#${mode}-result`);
  if(mode==='refi'){
   const horizon=form.elements.namedItem('horizon');
   horizon.setCustomValidity(Number(horizon.value)>Number(form.elements.namedItem('months').value)?t.invalid:'');
  }
- if(!form.checkValidity()){output.innerHTML=`<p class="error" role="status">${t.invalid}</p>`;delete snapshots[mode];return;}
+ if(!form.checkValidity()){if(mode==='budget'){document.querySelector('#dream-result').innerHTML='';document.querySelector('#budget-price-label').textContent='';}output.innerHTML=`<p class="error" role="status">${invalid}</p>`;delete snapshots[mode];return;}
+ if(mode==='budget')prepareExplore(form);
  const v=values(form);
  try{
  if(mode==='budget'){
   output.innerHTML=plannerResult(v,zh);
+  document.querySelector('#dream-result').innerHTML=dreamResult(v,zh,values(document.querySelector('#dream-form')));
  }else if(mode==='buy'){
   const p=purchase(v), b=payment(p.principal,v.rateB,v.months);
   output.innerHTML=`<div class="eyebrow">${t.monthly}</div><div class="big-number">${hkd(p.monthly)}</div><p class="number-note">${t.perMonth}</p><dl class="metrics">${metric(t.loan,hkd(p.principal))}${metric(t.cash,hkd(p.cash))}${metric(t.income,hkd(p.requiredIncome))}${metric(t.dsr,p.dsr.toFixed(1)+'%')}${metric(t.total,hkd(p.interestTotal))}${metric(t.up,hkd(p.rateUp))}</dl><div class="bar" role="img" aria-label="${t.dsr}: ${p.dsr.toFixed(1)}%"><span style="width:${Math.min(100,p.dsr/50*100)}%;background:${p.dsr>50?'#b75a35':'#1a5143'}"></span></div><p class="result-note ${p.dsr>50?'warning':''}">${p.dsr>50?t.dsrHigh:t.dsrOk}</p><p class="result-note"><strong>${t.compare}: ${hkd(b)}</strong><br>${t.diff}: ${hkd(Math.abs(p.monthly-b))}</p>${v.ltv>70?`<p class="result-note warning">${t.mip}</p>`:''}<p class="result-note">${t.costs}</p>`;
@@ -33,12 +36,12 @@ function render(mode){
   const recovery=r.breakEven===null?t.never:r.breakEven===0?t.now:r.breakEven+' '+t.month;
   output.innerHTML=`<div class="eyebrow">${t.refi}</div><div class="big-number">${hkd(r.monthlySavings)}</div><p class="number-note">${t.refiNote}</p><dl class="metrics">${metric(t.current,hkd(r.current.monthly))}${metric(t.next,hkd(r.next.monthly))}${metric(t.net,`<span class="${r.benefit<0?'warning':'good'}">${hkd(r.benefit)}</span>`)}${metric(t.netcost,hkd(r.netCosts))}${metric(t.interest,hkd(r.interestSavings))}${metric(t.recover,recovery)}</dl><p class="result-note">${t.refiCaveat}</p><p class="result-note">${t.recoverCaveat}</p>`;
  }
- snapshots[mode]=`${t.assumptions}\n\n${t.inputs}\n`+[...form.elements].filter(el=>el.name).map(el=>`${el.labels?.[0]?.textContent}: ${el.value}`).join('\n')+`\n\n${t.results}\n`+output.innerText;
- }catch{output.innerHTML=`<p class="error" role="status">${t.invalid}</p>`;delete snapshots[mode];}
+ snapshots[mode]=`${t.assumptions}\n\n${t.inputs}\n`+[...form.elements].filter(el=>el.name).map(el=>`${el.labels?.[0]?.textContent||(el.name==='months'?(zh?'貸款年期（月）':'Loan term (months)'):el.name)}: ${el.value}`).join('\n')+`\n\n${t.results}\n`+output.innerText;
+ }catch{output.innerHTML=`<p class="error" role="status">${invalid}</p>`;delete snapshots[mode];}
 }
 for(const mode of ['budget','buy','refi']){
  const form=document.querySelector(`#${mode}-form`);
- form.addEventListener('input',()=>render(mode));form.addEventListener('submit',e=>e.preventDefault());render(mode);
+ form.addEventListener('input',e=>{if(mode==='budget'&&['savings','income'].includes(e.target.name)&&form.checkValidity())prepareExplore(form,true);render(mode);});form.addEventListener('submit',e=>e.preventDefault());render(mode);
 }
 document.querySelectorAll('[data-mode]').forEach(button=>button.addEventListener('click',()=>{
  active=button.dataset.mode;
@@ -54,9 +57,13 @@ document.querySelector('#download').addEventListener('click',()=>{
 
 document.querySelector('#budget-result').addEventListener('click',e=>{
  if(!e.target.closest('[data-use-budget]'))return;
- const v=values(document.querySelector('#budget-form')),transferred=purchaseInputs(v);
+ const v=values(document.querySelector('#budget-form')),transferred=transferExplore(v.price,parameters(v));
  if(!transferred)return;
  const form=document.querySelector('#buy-form');
  for(const [key,value] of Object.entries(transferred))form.elements.namedItem(key).value=value;
  render('buy');document.querySelector('[data-mode="buy"]').click();
 });
+
+document.querySelector('#dream-form').addEventListener('input',()=>render('budget'));
+document.querySelector('#dream-form').addEventListener('submit',e=>e.preventDefault());
+document.querySelector('#budget-result').addEventListener('click',e=>{const term=e.target.closest('[data-term]');if(!term)return;document.querySelector('#budget-form').elements.namedItem('months').value=term.dataset.term;render('budget');});

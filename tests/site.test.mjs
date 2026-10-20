@@ -13,7 +13,7 @@ test('every local navigation and asset target exists',async()=>{
  for(const file of pages){const html=await readFile(file,'utf8');
   for(const match of html.matchAll(/(?:href|src)="([^"]+)"/g)){
    const url=match[1];if(/^https?:/.test(url))continue;
-   const [path,anchor]=url.split('#');const target=path?resolve(root,'.'+path+(path.endsWith('/')?'index.html':'')):file;
+   const [rawPath,anchor]=url.split('#');const path=rawPath.replace(/^\/hk-mortgage-explorer(?=\/)/,'');const target=path?resolve(root,'.'+path+(path.endsWith('/')?'index.html':'')):file;
    assert.ok((await stat(target)).isFile(),target);
    if(anchor){assert.ok((await readFile(target,'utf8')).includes(`id="${anchor}"`),`${target}#${anchor}`);}
   }

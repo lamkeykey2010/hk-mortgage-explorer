@@ -6,6 +6,7 @@ const mime={'.html':'text/html; charset=utf-8','.css':'text/css','.mjs':'text/ja
 http.createServer(async(req,res)=>{
   try {
     let path=decodeURIComponent(new URL(req.url,'http://localhost').pathname);
+    if(path.startsWith('/hk-mortgage-explorer/'))path=path.slice('/hk-mortgage-explorer'.length);
     if(path.endsWith('/')) path+='index.html';
     const file=resolve(root,'.'+path);
     if(!file.startsWith(root+sep)) {res.writeHead(403);res.end();return;}

@@ -1,47 +1,26 @@
 {
-  "checked_at_utc": "2026-10-20T15:04:35.813Z",
+  "checked_at_utc": "2026-10-20T15:34:20.678Z",
   "automated_tests": {
-    "passed": 18,
-    "failed": 0,
-    "command": "node --test tests/*.test.mjs"
+    "passed": 26,
+    "failed": 0
   },
-  "build": "Passed: 6 pages",
-  "local_http": {
-    "pages_passed": 6,
-    "assets_passed": 5
-  },
-  "javascript_syntax": "node --check src/app.mjs passed",
-  "browser_and_mobile_qa": {
-    "status": "Passed scoped interaction and visual checks in the Codex in-app browser",
-    "languages": [
-      "English",
-      "Traditional Chinese"
-    ],
-    "viewport_widths": [
-      320,
-      390,
-      "default desktop"
-    ],
+  "build": "6 bilingual pages, GitHub Pages project-path links",
+  "browser_qa": {
+    "status": "Passed scoped interactive checks",
     "checks": [
-      "Budget calculation, region selection and cash shortfall",
-      "Budget transfer preserves cash and payment limits",
-      "Purchase calculation with lower valuation",
-      "Refinance invalid horizon and recovery",
-      "Summary download content",
-      "Guide language navigation",
-      "No document horizontal overflow at 320px or 390px",
-      "No captured console warnings or errors"
+      "Only two required preliminary inputs",
+      "Automatic buying costs and cash reserve",
+      "Green, amber and red price-slider states",
+      "Ten consistent source-linked asking-price examples; one inconsistent record excluded",
+      "Region, district, estate and bedroom filters; empty matches shown honestly",
+      "Transfer preserves price, borrowing cost and cash reserve",
+      "Bank sources and dates shown; five H/P planning choices",
+      "English and Traditional Chinese",
+      "320px and 390px mobile layout checks passed with no document overflow",
+      "Invalid input clears stale property cards"
     ],
-    "limits": "Not an exhaustive accessibility audit or a multi-browser/device certification"
+    "limits": "No live bank offer feed, no guaranteed availability, no floor-plan inference, no employee/guarantor model"
   },
-  "deployment": "Validated source prepared for private deployment. See parent PROJECT.json for final deployment state.",
-  "adsense": "No publisher ID, ad script or account approval configured.",
-  "financial_limits": [
-    "Rates illustrative, not live bank quotes",
-    "Duty and MIP premiums require manual cost inputs",
-    "Budget planner uses ordinary LTV up to 70%, not MIP",
-    "Rates constant in each scenario",
-    "Refinance term unchanged, costs and retained cashback at outset",
-    "Housing is an August 2026 provisional RVD three-region average snapshot, not district/estate/listing coverage"
-  ]
+  "hosting": "GitHub Pages requested. Check parent PROJECT.json for final actual deployment result.",
+  "advertising": "No ads or trackers active"
 }

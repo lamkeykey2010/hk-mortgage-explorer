@@ -1,6 +1,6 @@
 # Traffic and AdSense launch plan
 
-Decision recorded 20 October 2026: serve Hong Kong homebuyers and owners refinancing. Monetise through Google AdSense. Mortgage referrals are out of scope. The site is currently a private prototype with no ads or analytics.
+Decision recorded 20 October 2026: serve Hong Kong homebuyers and owners refinancing. Monetise through Google AdSense. Mortgage referrals are out of scope. The site is a development preview with no ads or analytics.
 
 ## Positioning
 
@@ -24,7 +24,7 @@ Google's [RPM definition](https://support.google.com/adsense/answer/190515) supp
 
 ## Public launch requirements
 
-1. Choose a domain controlled by Keith and configure its DNS and hosting. The current chatgpt.site subdomain is a preview, and its suitability for independent AdSense site verification is unconfirmed. Google describes supported site URL types in its [site management guidance](https://support.google.com/adsense/answer/12170421). A controlled domain is the recommended route, not a domain purchase already authorised or completed.
+1. Choose a domain controlled by Keith and configure its DNS and hosting. The current github.io project URL is a development preview, and its suitability for independent AdSense site verification is unconfirmed. Google describes supported site URL types in its [site management guidance](https://support.google.com/adsense/answer/12170421). A controlled domain is the recommended route, not a domain purchase already authorised or completed.
 2. Complete browser, phone-width, keyboard, empty-field, language-switch and download testing. Review both languages, calculation assumptions and guide examples. Finish source verification for any new financial rules. Do not advertise a live bank comparison until quotes can be dated and reconciled.
 3. Publish operator and editor identity, a real contact channel, editorial method and privacy information. Do not invent qualifications, partner relationships, business registration details or contact addresses. The current About and Privacy sections describe the prototype, not the final advertising setup.
 4. Update canonical URLs, both language alternates and sitemap to the final origin. Remove preview noindex and robots disallow only for the public version. Ensure the public site and required assets are accessible without sign-in. Verify the domain in Search Console and submit the sitemap.
