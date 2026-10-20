@@ -1,0 +1,23 @@
+{
+  "checked_at_utc": "2026-10-20T14:50:37.4025935Z",
+  "automated_tests": {
+    "passed": 12,
+    "failed": 0,
+    "command": "node --test tests/*.test.mjs"
+  },
+  "build": "Passed: 6 pages",
+  "local_http": {
+    "pages_passed": 6,
+    "assets_passed": 2
+  },
+  "javascript_syntax": "node --check src/app.mjs passed",
+  "browser_and_mobile_qa": "Not performed. In-app browser unavailable and browser inventory empty.",
+  "deployment": "Not deployed. Failed to connect to git.chatgpt-team.site:443. No broader access requested.",
+  "adsense": "Planning only. No publisher ID configured, no ad code loaded, no account approval verified.",
+  "financial_limits": [
+    "Rates illustrative, not live quotes",
+    "Duty and MIP premiums require manual cost inputs",
+    "Rates constant within each scenario",
+    "Refinance term unchanged, costs and retained cashback at outset"
+  ]
+}
